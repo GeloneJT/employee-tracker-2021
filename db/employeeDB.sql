@@ -6,15 +6,14 @@ USE employeeDB;
 CREATE TABLE department (
     id INT UNSIGNED AUTO_INCREMENT, 
     name VARCHAR(30)  UNIQUE NOT NULL,
-    PRIMARY KEY (id),
+    PRIMARY KEY (id)
 )
 
 CREATE TABLE role (
     INDEX dep_id (department_id),
     title VARCHAR(30),
     salary INT UNSIGNED NOT NULL,
-    department_id INT UNSIGNED NOT NULL,
-    --FOREIGN  KEY   REFERENCES
+    department_id INT UNSIGNED NOT NULL
 )
 
 CREATE TABLE employee (

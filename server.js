@@ -68,17 +68,23 @@ function viewDept() {
 }
 
 function viewEmp() {
-  connection.query("SELECT * FROM employee ORDER BY role_id DESC", (err, res) => {
-    console.table([res]);
-    runSearch();
-  });
+  connection.query(
+    "SELECT * FROM employee ORDER BY role_id DESC",
+    (err, res) => {
+      console.table([res]);
+      runSearch();
+    }
+  );
 }
 
 function viewRole() {
-  connection.query("SELECT * FROM role ORDER BY department_id DESC", (err, res) => {
-    console.table([res]);
-    runSearch();
-  });
+  connection.query(
+    "SELECT * FROM role ORDER BY department_id DESC",
+    (err, res) => {
+      console.table([res]);
+      runSearch();
+    }
+  );
 }
 
 function addDept() {
@@ -87,8 +93,16 @@ function addDept() {
       type: "input",
       name: "addNewDept",
       message: "What is the name of the new department?",
+      validate: (addDeptVal) => {
+        if (addDeptVal) {
+          return true;
+        } else {
+          console.log("Enter a department name");
+          return false;
+        }
+      },
     },
-  ]).then;
+  ]).then; // Use INSERT INTO
   runSearch();
 }
 
@@ -98,11 +112,27 @@ function addEmp() {
       type: "input",
       name: "addFirst",
       message: "What is the employee's first name?",
+      validate: (firstVal) => {
+        if (firstVal) {
+          return true;
+        } else {
+          console.log("Enter a name");
+          return false;
+        }
+      },
     },
     {
       type: "input",
       name: "addLast",
       message: "What is the employee's last name?",
+      validate: (lastVal) => {
+        if (lastVal) {
+          return true;
+        } else {
+          console.log("Enter a name");
+          return false;
+        }
+      },
     },
     {
       type: "list",
@@ -116,7 +146,7 @@ function addEmp() {
       message: "Who is the employee's manager?",
       choices: [],
     },
-  ]).then;
+  ]).then; //Use INSERT INTO
   runSearch();
 }
 
@@ -126,18 +156,42 @@ function addRole() {
       type: "input",
       name: "addTitle",
       message: "What is the title of the postion?",
+      validate: (addRoleVal) => {
+        if (addRoleVal) {
+          return true;
+        } else {
+          console.log("Enter a title");
+          return false;
+        }
+      },
     },
     {
       type: "number",
       name: "addSalary",
       message: "What is the starting salary for the new position?",
+      validate: (addSalVal) => {
+        if (NaN(addSalVal) === false) {
+          return true;
+        } else {
+          console.log("Enter a salary");
+          return false;
+        }
+      },
     },
     {
       type: "number",
       name: "addDeptId",
       message: "What is the ID number for new role?",
+      validate: (addDeptVal) => {
+        if (addDeptVal) {
+          return true;
+        } else {
+          console.log("Enter a role ID");
+          return false;
+        }
+      },
     },
-  ]).then;
+  ]).then; // Use INSERT INTO, assign prompt answers to values
   runSearch();
 }
 

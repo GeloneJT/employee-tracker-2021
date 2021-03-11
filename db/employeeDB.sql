@@ -14,6 +14,7 @@ CREATE TABLE role (
     title VARCHAR(30),
     salary INT UNSIGNED NOT NULL,
     department_id INT UNSIGNED NOT NULL
+    --FK
 )
 
 CREATE TABLE employee (

@@ -24,8 +24,8 @@ function runSearch() {
           "View role",
           "Add a department",
           "Add an employee",
-          "Add role(s)",
-          "Update employee role(s)",
+          "Add role",
+          "Update employee role",
           "Exit",
         ],
       },
@@ -43,6 +43,9 @@ function runSearch() {
           break;
         case "Add a department":
           addDept();
+          break;
+        case "Add an employee":
+          addEmp();
           break;
         case "Add role":
           addRole();
@@ -96,6 +99,21 @@ function addDept() {
   ]).then;
 }
 
+function addEmp() {
+  inquirer.prompt([
+    {
+      type: "",
+      name: "",
+      message: "",
+    },
+    {
+      type: "",
+      name: "",
+      message: "",
+    },
+  ]).then;
+}
+
 function addRole() {
   inquirer.prompt([
     {
@@ -128,6 +146,6 @@ function updateEmp() {
 
 function exit() {
   connection.end();
-};
+}
 
 runSearch();

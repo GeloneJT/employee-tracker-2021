@@ -19,9 +19,9 @@ function runSearch() {
         message:
           "What section of the employee databse would you like to search?",
         choices: [
-          "View departments",
-          "View employees",
-          "View role",
+          "View all departments",
+          "View all employees",
+          "View all role",
           "Add a department",
           "Add an employee",
           "Add role",
@@ -32,13 +32,13 @@ function runSearch() {
     ])
     .then((answer) => {
       switch (answer.userChoice) {
-        case "View departments":
+        case "View all departments":
           viewDept();
           break;
-        case "View employees":
+        case "View all employees":
           viewEmp();
           break;
-        case "View role":
+        case "View all role":
           viewRole();
           break;
         case "Add a department":
@@ -61,24 +61,21 @@ function runSearch() {
 }
 
 function viewDept() {
-  connection.query(
-    "SELECT * FROM department WHERE employeedb.department = ?",
-    (err, res) => {
-      console.table(res);
-      runSearch();
-    }
-  );
+  connection.query("SELECT * FROM department ORDER BY id DESC", (err, res) => {
+    console.table([res]);
+    runSearch();
+  });
 }
 
 function viewEmp() {
-  connection.query("SELECT * FROM employee WHERE = ?", (err, res) => {
-    console.table(res);
+  connection.query("SELECT * FROM employee ORDER BY role_id DESC", (err, res) => {
+    console.table([res]);
     runSearch();
   });
 }
 
 function viewRole() {
-  connection.query("SELECT * FROM department WHERE = ?", (err, res) => {
+  connection.query("SELECT * FROM role ORDER BY department_id DESC", (err, res) => {
     console.table([res]);
     runSearch();
   });
@@ -87,61 +84,80 @@ function viewRole() {
 function addDept() {
   inquirer.prompt([
     {
-      type: "",
-      name: "",
-      message: "",
-    },
-    {
-      type: "",
-      name: "",
-      message: "",
+      type: "input",
+      name: "addNewDept",
+      message: "What is the name of the new department?",
     },
   ]).then;
+  runSearch();
 }
 
 function addEmp() {
   inquirer.prompt([
     {
-      type: "",
-      name: "",
-      message: "",
+      type: "input",
+      name: "addFirst",
+      message: "What is the employee's first name?",
     },
     {
-      type: "",
-      name: "",
-      message: "",
+      type: "input",
+      name: "addLast",
+      message: "What is the employee's last name?",
+    },
+    {
+      type: "list",
+      name: "addEmpRole",
+      message: "What is the employee's role?",
+      choices: [],
+    },
+    {
+      type: "list",
+      name: "addEmpMan",
+      message: "Who is the employee's manager?",
+      choices: [],
     },
   ]).then;
+  runSearch();
 }
 
 function addRole() {
   inquirer.prompt([
     {
-      type: "",
-      name: "",
-      message: "",
+      type: "input",
+      name: "addTitle",
+      message: "What is the title of the postion?",
     },
     {
-      type: "",
-      name: "",
-      message: "",
+      type: "number",
+      name: "addSalary",
+      message: "What is the starting salary for the new position?",
+    },
+    {
+      type: "number",
+      name: "addDeptId",
+      message: "What is the ID number for new role?",
     },
   ]).then;
+  runSearch();
 }
 
 function updateEmp() {
   inquirer.prompt([
     {
-      type: "",
-      name: "",
-      message: "",
+      type: "list",
+      name: "updateMan",
+      message: "Which employee's manager would you like to update?",
+      choices: [],
     },
     {
-      type: "",
-      name: "",
-      message: "",
+      type: "list",
+      name: "upddateEmpMan",
+      message:
+        "Which employee do you want to select as manager for selected employee?",
+      choices: [],
     },
   ]).then;
+  runSearch();
 }
 
 function exit() {

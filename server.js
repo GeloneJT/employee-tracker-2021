@@ -1,10 +1,11 @@
 const mysql = require("mysql");
-const console = require("console");
+const cTable = require("console.table");
 const inquirer = require("inquirer");
+
 
 const connection = mysql.createConnection({
   host: "localhost",
-  port: 3000,
+  port: 3306,
   user: "root",
   password: "password",
   database: "employeeDB",
@@ -61,27 +62,29 @@ function runSearch() {
 }
 
 function viewDept() {
-  connection.query("SELECT * FROM department ORDER BY id DESC", (err, res) => {
-    console.table([res]);
+  const query = `SELECT * FROM department ORDER BY id DESC`;
+  connection.query( query,(err, res) => {
+    if (err) throw err;
+    console.table(res);
     runSearch();
   });
-}
+};
 
 function viewEmp() {
-  connection.query(
-    "SELECT * FROM employee ORDER BY role_id DESC",
-    (err, res) => {
-      console.table([res]);
+  const query = `SELECT * FROM employee ORDER BY id DESC`;
+  connection.query( query,(err, res) => {
+    if (err) throw err;
+    console.table(res);
       runSearch();
     }
   );
 }
 
 function viewRole() {
-  connection.query(
-    "SELECT * FROM role ORDER BY department_id DESC",
-    (err, res) => {
-      console.table([res]);
+  const query = `SELECT * FROM role ORDER BY title DESC`;
+  connection.query( query,(err, res) => {
+    if (err) throw err;
+    console.table(res);
       runSearch();
     }
   );

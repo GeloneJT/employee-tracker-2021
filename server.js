@@ -163,50 +163,66 @@ function addEmp() {
             first_name: answer.addFirst,
             last_name: answer.addLast,
             role_id: answer.addEmpRole,
-            manager_id: answer.addEmpMan
+            manager_id: answer.addEmpMan,
           },
-          console.log("Employee created!!!")
+          console.log("Employee successfully created!!!")
         );
       });
-    //Use INSERT INTO
     // runSearch();
   });
 }
 
 function addRole() {
-  inquirer.prompt([
-    {
-      type: "input",
-      name: "addTitle",
-      message: "What is the title of the postion?",
-      validate: (addRoleVal) => {
-        if (addRoleVal) {
-          return true;
-        } else {
-          console.log("Enter a title");
-          return false;
-        }
-      },
-    },
-    {
-      type: "number",
-      name: "addSalary",
-      message: "What is the starting salary for the new position?",
-    },
-    {
-      type: "number",
-      name: "addDeptId",
-      message: "What is the ID number for new role?",
-      validate: (addDeptVal) => {
-        if (addDeptVal) {
-          return true;
-        } else {
-          console.log("Enter a role ID");
-          return false;
-        }
-      },
-    },
-  ]).then; // Use INSERT INTO, assign prompt answers to values
+  const query = `SELECT * FROM role ORDER BY department_id DESC`;
+  connection.query(query, (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "addTitle",
+          message: "What is the title of the postion?",
+          validate: (addRoleVal) => {
+            if (addRoleVal) {
+              return true;
+            } else {
+              console.log("Enter a title");
+              return false;
+            }
+          },
+        },
+        {
+          type: "number",
+          name: "addSalary",
+          message: "What is the starting salary for the new position?",
+        },
+        {
+          type: "number",
+          name: "addDeptId",
+          message: "What is the department ID for new role?",
+          validate: (addDeptVal) => {
+            if (addDeptVal) {
+              return true;
+            } else {
+              console.log("Enter a role ID");
+              return false;
+            }
+          },
+        },
+      ])
+      .then((answer) => {
+        connection.query(
+          "INSERT INTO role SET ?",
+          {
+            title: answer.addTitle,
+            salary: answer.addSalary,
+            department_id: answer.addDeptId,
+          },
+          console.log("Role successfully created!!!")
+        );
+      });
+  });
 }
 
 function updateEmp() {

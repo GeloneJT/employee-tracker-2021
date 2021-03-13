@@ -4,7 +4,7 @@ const inquirer = require("inquirer");
 
 const connection = mysql.createConnection({
   host: "localhost",
-  port: 3306,
+  port: process.env.PORT || 3306,
   user: "root",
   password: "password",
   database: "employeeDB",
@@ -115,7 +115,7 @@ function addDept() {
 }
 
 function addEmp() {
-  connection.query(`SELECT * FROM role`,`SELECT * FROM employee`, (err, results) => {
+  connection.query(`SELECT * FROM role`, (err, results) => {
     if (err) throw err;
     inquirer
       .prompt([
@@ -146,27 +146,13 @@ function addEmp() {
           },
         },
         {
-          type: "list",
+          type: "input",
           name: "addEmpRole",
-          choices() {
-            const choiceArrayRole = [];
-            results.forEach(({ title }) => {
-              choiceArrayRole.push(title);
-            });
-            return choiceArrayRole;
-          },
-          message: "What is the employee's role?",
+          message: "What is the employee's ID number?",
         },
         {
-          type: "list",
+          type: "input",
           name: "addEmpMan",
-          choices() {
-            const choiceArrayMan = [];
-            results.forEach(({ manager_id}) => {
-              choiceArrayMan.push([manager_id]);
-            });
-            return choiceArrayMan;
-          },
           message: "What is the employee's manager's ID?",
         },
       ])
@@ -191,13 +177,13 @@ function addRole() {
   inquirer.prompt([
     {
       type: "input",
-      name: "adddepartment_id",
-      message: "What is the department_id of the postion?",
+      name: "addTitle",
+      message: "What is the title of the postion?",
       validate: (addRoleVal) => {
         if (addRoleVal) {
           return true;
         } else {
-          console.log("Enter a department_id");
+          console.log("Enter a title");
           return false;
         }
       },
@@ -206,14 +192,6 @@ function addRole() {
       type: "number",
       name: "addSalary",
       message: "What is the starting salary for the new position?",
-      validate: (addSalVal) => {
-        if (NaN(addSalVal) === false) {
-          return true;
-        } else {
-          console.log("Enter a salary");
-          return false;
-        }
-      },
     },
     {
       type: "number",
@@ -229,7 +207,6 @@ function addRole() {
       },
     },
   ]).then; // Use INSERT INTO, assign prompt answers to values
-  runSearch();
 }
 
 function updateEmp() {

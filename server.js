@@ -167,8 +167,8 @@ function addEmp() {
           },
           console.log("Employee successfully created!!!")
         );
+        runSearch();
       });
-    // runSearch();
   });
 }
 
@@ -221,27 +221,57 @@ function addRole() {
           },
           console.log("Role successfully created!!!")
         );
+        runSearch();
       });
   });
 }
 
 function updateEmp() {
-  inquirer.prompt([
-    {
-      type: "list",
-      name: "updateMan",
-      message: "Which employee's manager would you like to update?",
-      choices: [],
-    },
-    {
-      type: "list",
-      name: "upddateEmpMan",
-      message:
-        "Which employee do you want to select as manager for selected employee?",
-      choices: [],
-    },
-  ]).then;
-  runSearch();
+  connection.query(
+    "SELECT * FROM employee",
+    (err, results) => {
+      if (err) throw err;
+      inquirer.prompt([
+        {
+          type: "list",
+          name: "updateMan",
+          message: "Which employee would you like to update?",
+          choices() {
+            const choiceArrayEmp = [];
+            results.forEach((employee) => {
+              choiceArrayEmp.push(
+                `${employee.first_name} ${employee.last_name}`
+              );
+            });
+            return choiceArrayEmp;
+          },
+        },
+        {
+          type: "list",
+          name: "updateEmpMan",
+          message:
+            "Which employee do you want to select as manager for selected employee?",
+          choices() {
+            const choiceArrayMan = [];
+            results.forEach((employee) => {
+              choiceArrayMan.push(
+                `${employee.first_name} ${employee.last_name}`
+              );
+            });
+            return choiceArrayMan;
+          },
+        },
+      ])
+      .then((answer) => {
+        let query = `UPDATE employee SET employee.manager_id WHERE employee.id = ?`;
+        connection.query(query, answer, (err, res) => {
+          if (err) throw err;
+          console.log('Employee updated!!!');
+          runSearch();
+        });
+      });
+    }
+  );
 }
 
 function exit() {

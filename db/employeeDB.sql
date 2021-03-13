@@ -10,12 +10,13 @@ CREATE TABLE department (
 );
 
 CREATE TABLE role (
+    ID INT  NOT NULL AUTO_INCREMENT,
     INDEX dep_id (department_id),
     title VARCHAR(30) NOT NULL,
     salary INT UNSIGNED NOT NULL,
     department_id INT UNSIGNED NOT NULL,
-    FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
-
+    FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE employee (

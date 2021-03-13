@@ -2,7 +2,6 @@ const mysql = require("mysql");
 const cTable = require("console.table");
 const inquirer = require("inquirer");
 
-
 const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -63,107 +62,142 @@ function runSearch() {
 
 function viewDept() {
   const query = `SELECT * FROM department ORDER BY id DESC`;
-  connection.query( query,(err, res) => {
+  connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
     runSearch();
   });
-};
+}
 
 function viewEmp() {
   const query = `SELECT * FROM employee ORDER BY id DESC`;
-  connection.query( query,(err, res) => {
+  connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
-      runSearch();
-    }
-  );
+    runSearch();
+  });
 }
 
 function viewRole() {
-  const query = `SELECT * FROM role ORDER BY title DESC`;
-  connection.query( query,(err, res) => {
+  const query = `SELECT * FROM role ORDER BY department_id DESC`;
+  connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
-      runSearch();
-    }
-  );
+    runSearch();
+  });
 }
 
 function addDept() {
-  inquirer.prompt([
-    {
-      type: "input",
-      name: "addNewDept",
-      message: "What is the name of the new department?",
-      validate: (addDeptVal) => {
-        if (addDeptVal) {
-          return true;
-        } else {
-          console.log("Enter a department name");
-          return false;
-        }
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "addNewDept",
+        message: "What is the name of the new department?",
+        validate: (addDeptVal) => {
+          if (addDeptVal) {
+            return true;
+          } else {
+            console.log("Enter a department name");
+            return false;
+          }
+        },
       },
-    },
-  ]).then; // Use INSERT INTO
-  runSearch();
+    ])
+    .then((answer) => {
+      let query = `INSERT INTO department(name) VALUES (?)`;
+      connection.query(query, answer.addNewDept, (err, res) => {
+        if (err) throw err;
+        console.log(answer.addNewDept + ` department created!!!`);
+        runSearch();
+      });
+    });
 }
 
 function addEmp() {
-  inquirer.prompt([
-    {
-      type: "input",
-      name: "addFirst",
-      message: "What is the employee's first name?",
-      validate: (firstVal) => {
-        if (firstVal) {
-          return true;
-        } else {
-          console.log("Enter a name");
-          return false;
-        }
-      },
-    },
-    {
-      type: "input",
-      name: "addLast",
-      message: "What is the employee's last name?",
-      validate: (lastVal) => {
-        if (lastVal) {
-          return true;
-        } else {
-          console.log("Enter a name");
-          return false;
-        }
-      },
-    },
-    {
-      type: "list",
-      name: "addEmpRole",
-      message: "What is the employee's role?",
-      choices: [],
-    },
-    {
-      type: "list",
-      name: "addEmpMan",
-      message: "Who is the employee's manager?",
-      choices: [],
-    },
-  ]).then; //Use INSERT INTO
-  runSearch();
+  connection.query(`SELECT * FROM role`,`SELECT * FROM employee`, (err, results) => {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "addFirst",
+          message: "What is the employee's first name?",
+          validate: (firstVal) => {
+            if (firstVal) {
+              return true;
+            } else {
+              console.log("Enter a name");
+              return false;
+            }
+          },
+        },
+        {
+          type: "input",
+          name: "addLast",
+          message: "What is the employee's last name?",
+          validate: (lastVal) => {
+            if (lastVal) {
+              return true;
+            } else {
+              console.log("Enter a name");
+              return false;
+            }
+          },
+        },
+        {
+          type: "list",
+          name: "addEmpRole",
+          choices() {
+            const choiceArrayRole = [];
+            results.forEach(({ title }) => {
+              choiceArrayRole.push(title);
+            });
+            return choiceArrayRole;
+          },
+          message: "What is the employee's role?",
+        },
+        {
+          type: "list",
+          name: "addEmpMan",
+          choices() {
+            const choiceArrayMan = [];
+            results.forEach(({ manager_id}) => {
+              choiceArrayMan.push([manager_id]);
+            });
+            return choiceArrayMan;
+          },
+          message: "What is the employee's manager's ID?",
+        },
+      ])
+      .then((answer) => {
+        connection.query(
+          "INSERT INTO employee SET ?",
+          {
+            first_name: answer.addFirst,
+            last_name: answer.addLast,
+            role_id: answer.addEmpRole,
+            manager_id: answer.addEmpMan
+          },
+          console.log("Employee created!!!")
+        );
+      });
+    //Use INSERT INTO
+    // runSearch();
+  });
 }
 
 function addRole() {
   inquirer.prompt([
     {
       type: "input",
-      name: "addTitle",
-      message: "What is the title of the postion?",
+      name: "adddepartment_id",
+      message: "What is the department_id of the postion?",
       validate: (addRoleVal) => {
         if (addRoleVal) {
           return true;
         } else {
-          console.log("Enter a title");
+          console.log("Enter a department_id");
           return false;
         }
       },

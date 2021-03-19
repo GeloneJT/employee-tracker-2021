@@ -227,11 +227,10 @@ function addRole() {
 }
 
 function updateEmp() {
-  connection.query(
-    "SELECT * FROM employee",
-    (err, results) => {
-      if (err) throw err;
-      inquirer.prompt([
+  connection.query("SELECT * FROM employee", (err, results) => {
+    if (err) throw err;
+    inquirer
+      .prompt([
         {
           type: "list",
           name: "updateMan",
@@ -248,17 +247,14 @@ function updateEmp() {
         },
         {
           type: "list",
-          name: "updateEmpMan",
-          message:
-            "Which employee do you want to select as manager for selected employee?",
+          name: "updateEmpRole",
+          message: "What is the employees new role?",
           choices() {
-            const choiceArrayMan = [];
-            results.forEach((employee) => {
-              choiceArrayMan.push(
-                `${employee.first_name} ${employee.last_name}`
-              );
+            const choiceArrayRole = [];
+            results.forEach((role) => {
+              choiceArrayMan.push(role);
             });
-            return choiceArrayMan;
+            return choiceArrayRole;
           },
         },
       ])
@@ -266,12 +262,11 @@ function updateEmp() {
         let query = `UPDATE employee SET employee.manager_id WHERE employee.id = ?`;
         connection.query(query, answer, (err, res) => {
           if (err) throw err;
-          console.log('Employee updated!!!');
+          console.log("Employee updated!!!");
           runSearch();
         });
       });
-    }
-  );
+  });
 }
 
 function exit() {

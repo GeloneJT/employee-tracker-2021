@@ -146,9 +146,16 @@ function addEmp() {
           },
         },
         {
-          type: "input",
+          type: "list",
           name: "addEmpRole",
-          message: "What is the employee's ID number?",
+          message: "What is the employee's title?",
+          choices() {
+            const choiceArrayAddEmpRole = [];
+            results.forEach(({title}) => {
+              choiceArrayAddEmpRole.push(title);
+            });
+            return choiceArrayAddEmpRole;
+          }
         },
         {
           type: "input",
@@ -259,7 +266,7 @@ function updateEmp() {
         },
       ])
       .then((answer) => {
-        let query = `UPDATE employee SET employee.manager_id WHERE employee.id = ?`;
+        let query = `UPDATE employee SET employee.first_name, employee.last_name WHERE employee.role_id = ?`;
         connection.query(query, answer, (err, res) => {
           if (err) throw err;
           console.log("Employee updated!!!");

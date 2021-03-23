@@ -9,7 +9,7 @@ const connection = mysql.createConnection({
   password: "password",
   database: "employeeDB",
 });
-
+//Starts inquirer
 function runSearch() {
   inquirer
     .prompt([
@@ -59,7 +59,7 @@ function runSearch() {
       }
     });
 }
-
+//View all departments
 function viewDept() {
   const query = `SELECT * FROM department ORDER BY id DESC`;
   connection.query(query, (err, res) => {
@@ -68,7 +68,7 @@ function viewDept() {
     runSearch();
   });
 }
-
+//View all employees
 function viewEmp() {
   const query = `SELECT * FROM employee ORDER BY id DESC`;
   connection.query(query, (err, res) => {
@@ -77,7 +77,7 @@ function viewEmp() {
     runSearch();
   });
 }
-
+//View all roles
 function viewRole() {
   const query = `SELECT * FROM role ORDER BY department_id DESC`;
   connection.query(query, (err, res) => {
@@ -86,7 +86,7 @@ function viewRole() {
     runSearch();
   });
 }
-
+//Add a new department
 function addDept() {
   inquirer
     .prompt([
@@ -113,7 +113,7 @@ function addDept() {
       });
     });
 }
-
+//Add a new employee
 function addEmp() {
   connection.query(`SELECT * FROM role`, (err, results) => {
     if (err) throw err;
@@ -178,7 +178,7 @@ function addEmp() {
       });
   });
 }
-
+//Add a new role
 function addRole() {
   const query = `SELECT * FROM role ORDER BY department_id DESC`;
   connection.query(query, (err, res) => {
@@ -232,15 +232,15 @@ function addRole() {
       });
   });
 }
-
+//Update employee
 function updateEmp() {
-  connection.query("SELECT * FROM employee", (err, results) => {
+  connection.query(`SELECT employee.first_name, employee.last_name, employee.role_id FROM employee`, (err, results) => {
     if (err) throw err;
     inquirer
       .prompt([
         {
           type: "list",
-          name: "updateMan",
+          name: "updateEmp",
           message: "Which employee would you like to update?",
           choices() {
             const choiceArrayEmp = [];
@@ -258,15 +258,15 @@ function updateEmp() {
           message: "What is the employees new role?",
           choices() {
             const choiceArrayRole = [];
-            results.forEach((role) => {
-              choiceArrayMan.push(role);
+            results.map(({role_id}) => {
+              choiceArrayRole.push(role_id);
             });
             return choiceArrayRole;
           },
         },
       ])
       .then((answer) => {
-        let query = `UPDATE employee SET employee.first_name, employee.last_name WHERE employee.role_id = ?`;
+        let query = `UPDATE employee SET  `;
         connection.query(query, answer, (err, res) => {
           if (err) throw err;
           console.log("Employee updated!!!");

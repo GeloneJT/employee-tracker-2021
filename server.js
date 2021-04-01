@@ -234,7 +234,9 @@ function addRole() {
 }
 //Update employee
 function updateEmp() {
-  connection.query(`SELECT employee.first_name, employee.last_name, employee.role_id FROM employee`, (err, results) => {
+  const choiceArrayEmp = [];
+  const choiceArrayRole = [];
+  connection.query(`SELECT employee.first_name, employee.last_name, employee.role_id, employee.id FROM employee`, (err, results) => {
     if (err) throw err;
     inquirer
       .prompt([
@@ -243,10 +245,10 @@ function updateEmp() {
           name: "updateEmp",
           message: "Which employee would you like to update?",
           choices() {
-            const choiceArrayEmp = [];
             results.forEach((employee) => {
+             
               choiceArrayEmp.push(
-                `${employee.first_name} ${employee.last_name}`
+                `${employee.first_name} ${employee.last_name} id:${employee.id}`
               );
             });
             return choiceArrayEmp;
@@ -257,7 +259,6 @@ function updateEmp() {
           name: "updateEmpRole",
           message: "What is the employees new role?",
           choices() {
-            const choiceArrayRole = [];
             results.map(({role_id}) => {
               choiceArrayRole.push(role_id);
             });
@@ -266,8 +267,11 @@ function updateEmp() {
         },
       ])
       .then((answer) => {
-        let query = `UPDATE employee SET  `;
-        connection.query(query, answer, (err, res) => {
+        console.log(answer.updateEmp)
+        console.log(answer.updateEmpRole)
+        let employeeArr = answer.updateEmp.split("id:")
+        let query = `UPDATE employee SET role_id = ${answer.updateEmpRole} WHERE id = ${employeeArr[1]}   `;
+        connection.query(query, (err, res) => {
           if (err) throw err;
           console.log("Employee updated!!!");
           runSearch();

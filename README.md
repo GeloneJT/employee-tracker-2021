@@ -18,7 +18,7 @@
 
   ## Installation
 
-  To execute this code install these dependecies:
+  To execute this code run these in your terminal to install the needed dependecies:
   ```
   npm int
   ```
@@ -36,9 +36,27 @@
 
   ## Usage
 
+Running the following command in your terminal will start the inquirer prompt:
   ```
   node server.js
   ```
+  
+  Making a selection using the arrow keys and the enter key will allow you to select the query you'd like to run. Below are some examples of what you terminal will look like:
+
+
+**View tables**
+
+
+  ![View Tables](img/ViewAll.png)
+
+  
+
+  **Add to tables**
+
+  ![Add Queries](img/AddQueries.png)
+
+
+
   <hr>
 
   ## Credit
@@ -54,7 +72,7 @@
   jelani13@icloud.com
 
   ## Questions
-  The link [here]() shows the full demo from test run, CLI  inputs, to what the HTML will look like after render.
+  The link [here](https://youtu.be/__YJy5MsSNI) shows the full demo from server initiliaztion, CLI  inputs, to what each table looks in the terminal after each query prompt.
   Any further questions needed in regards to this application or any other repo feel free to contact me via my email or GitHub given above
 
 <hr>

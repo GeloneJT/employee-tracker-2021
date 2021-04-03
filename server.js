@@ -56,6 +56,8 @@ function runSearch() {
         case "Exit":
           exit();
           break;
+        default:
+          break;
       }
     });
 }
@@ -115,7 +117,8 @@ function addDept() {
 }
 //Add a new employee
 function addEmp() {
-  connection.query(`SELECT * FROM role`, (err, results) => {
+  // const choiceArrayAddEmpRole = [];
+  connection.query(`SELECT role.id, role.title FROM role`, (err, results) => {
     if (err) throw err;
     inquirer
       .prompt([
@@ -146,16 +149,15 @@ function addEmp() {
           },
         },
         {
-          type: "list",
+          type: "input",
           name: "addEmpRole",
-          message: "What is the employee's title?",
-          choices() {
-            const choiceArrayAddEmpRole = [];
-            results.forEach(({title}) => {
-              choiceArrayAddEmpRole.push(title);
-            });
-            return choiceArrayAddEmpRole;
-          }
+          message: "What is the employee's role id?",
+          // choices() {
+          //   results.forEach(({ title }) => {
+          //     choiceArrayAddEmpRole.push(title);
+          //   });
+          //   return choiceArrayAddEmpRole;
+          // },
         },
         {
           type: "input",
@@ -236,48 +238,50 @@ function addRole() {
 function updateEmp() {
   const choiceArrayEmp = [];
   const choiceArrayRole = [];
-  connection.query(`SELECT employee.first_name, employee.last_name, employee.role_id, employee.id FROM employee`, (err, results) => {
-    if (err) throw err;
-    inquirer
-      .prompt([
-        {
-          type: "list",
-          name: "updateEmp",
-          message: "Which employee would you like to update?",
-          choices() {
-            results.forEach((employee) => {
-             
-              choiceArrayEmp.push(
-                `${employee.first_name} ${employee.last_name} id:${employee.id}`
-              );
-            });
-            return choiceArrayEmp;
+  connection.query(
+    `SELECT employee.first_name, employee.last_name, employee.role_id, employee.id FROM employee`,
+    (err, results) => {
+      if (err) throw err;
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "updateEmp",
+            message: "Which employee would you like to update?",
+            choices() {
+              results.forEach((employee) => {
+                choiceArrayEmp.push(
+                  `${employee.first_name} ${employee.last_name} id:${employee.id}`
+                );
+              });
+              return choiceArrayEmp;
+            },
           },
-        },
-        {
-          type: "list",
-          name: "updateEmpRole",
-          message: "What is the employees new role?",
-          choices() {
-            results.map(({role_id}) => {
-              choiceArrayRole.push(role_id);
-            });
-            return choiceArrayRole;
+          {
+            type: "list",
+            name: "updateEmpRole",
+            message: "What is the employees new role?",
+            choices() {
+              results.map(({ role_id }) => {
+                choiceArrayRole.push(role_id);
+              });
+              return choiceArrayRole;
+            },
           },
-        },
-      ])
-      .then((answer) => {
-        console.log(answer.updateEmp)
-        console.log(answer.updateEmpRole)
-        let employeeArr = answer.updateEmp.split("id:")
-        let query = `UPDATE employee SET role_id = ${answer.updateEmpRole} WHERE id = ${employeeArr[1]}   `;
-        connection.query(query, (err, res) => {
-          if (err) throw err;
-          console.log("Employee updated!!!");
-          runSearch();
+        ])
+        .then((answer) => {
+          console.log(answer.updateEmp);
+          console.log(answer.updateEmpRole);
+          let employeeArr = answer.updateEmp.split("id:");
+          let query = `UPDATE employee SET role_id = ${answer.updateEmpRole} WHERE id = ${employeeArr[1]}`;
+          connection.query(query, (err, res) => {
+            if (err) throw err;
+            console.log("Employee updated!!!");
+            runSearch();
+          });
         });
-      });
-  });
+    }
+  );
 }
 
 function exit() {
